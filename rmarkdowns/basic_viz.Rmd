@@ -21,6 +21,9 @@ Welcome to Basic Visualizations! We're going to go over some code on how to crea
 
 ### Setup
 
+
+
+
 #### Loading Libraries
 
 Let's load in the `tidyverse`, `janitor`, and `here` libraries as we'll be using different functions within these packages. 
@@ -122,7 +125,7 @@ Let's create one more scatter plot!
     - Let's pass goal_5_score to the color argument to color each point/country based on their SDG 5 score.
     
 ```{r}
-ggplot(data = sdr_data, aes(x= goal_3_score, y = goal_4_score, color = goal_5_score)) +
+ggplot(data = sdr_data, aes(x= goal_8_score, y = goal_9_score, color = goal__score)) +
   geom_point()
 ```
 
@@ -131,10 +134,18 @@ Cool! It seems that the darkest blue points (countries with the lowest SDG 5 sco
 #### <span style="color: red;">Challenge 1</span>
 Create a scatterplot using two different SDG scores. Then, color the points by using a third SDG score. In a couple of sentences, describe what you see.
 
+
+
+```{r}
+ggplot(data = sdr_data, aes(x= goal_8_score, y = goal_9_score, color = goal_10_score)) +
+  geom_point()
+```
+In this plot we see there is a cluster of countries that have high goal 10 scores as well as high goal 8 and 9 scores, hence the cluster of light dots in the top right corner. Also, you'll notice that the majority of countries that have low goal 10 scores are around midrange with their goal 8 and 9 scores. ```
+
+
 ### Bar Chart
 
 When should we use a **bar chart**?
-
 A bar chart is great for comparing a numeric variable by group. 
 
   - In this case, let's try to compare our numeric variable (SDG 3 Scores) by group (country)
@@ -152,8 +163,8 @@ Hmm... it looks like the country names are hard to read - there are too many of 
     - We'll create a new dataframe from our original dataframe, sdr_data, called lac_sdr_data that only includes countries in Latin America and the Carribean
 
 ```{r}
-lac_sdr_data <- sdr_data %>% 
-  filter(regions_used_for_the_sdr == "LAC") # filtering for LAC countries only
+MENA_sdr_data <- sdr_data %>% 
+  filter(regions_used_for_the_sdr == "MENA") # filtering for LAC countries only
 ```
 
 Now let's make a bar chart from our new dataframe `lac_sdr_data`
