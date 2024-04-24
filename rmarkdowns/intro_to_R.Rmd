@@ -36,6 +36,9 @@ One of the most helpful tools to an R programmer are R packages! In a nutshell, 
 ```{r}
 library()
 ```
+```{r}
+
+```
 
 A new window should have opened up with a list of packages and a short description! 
 
@@ -62,6 +65,11 @@ my_age + 1
 Let's say you want to start using the tidyverse package to make cool visualizations, but haven't installed it yet. **Run the following code in the console** to install it: install.packages("tidyverse") 
 
 Hint: The *console with the code you need to write* is pictured below
+```{r}
+install.packages("tidyverse")
+
+```
+
 
 
 <img src="`r here::here('images/console.png')`" /> 
@@ -115,7 +123,16 @@ my_age + 5 # how old will you be in 5 years?
 ```
 
 #### <span style="color: red;">Challenge 1</span>
-Create a my_name variable with your name assigned to the variable instead of "Victoria DelaCruz". Then, create a my_age variable with your age. 
+Create a my_name variable with your name assigned to the variable instead of "Victoria DelaCruz". Then, create a my_age variable with your age.
+
+```{r}
+my_name <- "William Heintz"
+```
+```{r}
+my_age = 42
+my_age + 2 #
+```
+
 
 #### Different Types of Data
 

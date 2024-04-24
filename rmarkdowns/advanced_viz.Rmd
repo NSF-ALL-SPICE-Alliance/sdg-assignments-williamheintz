@@ -75,13 +75,13 @@ We start with the same exact code and add to it with `+`
 ```{r, message=FALSE, warning=FALSE}
 ggplot(sdr_data, aes(x = goal_4_score, fill=regions_used_for_the_sdr)) +
   geom_histogram() +
-  theme_minimal() +
-  scale_fill_viridis_d() +
-  labs(title = "Distributions of SDG 4 Scores",
+  theme_void() +
+  scale_fill_viridis_d(option = "magma") +
+  labs(title = "Supah Awesome Data",
        x = "SDG 4 Score",
-       y = "Number of Countries",
+       y = "Supah Awesome Countries",
        fill = "Region")
-  
+
 ```
 
 
@@ -105,16 +105,16 @@ Interactive visualizations are a really exciting part of data science! Interacti
    
       
 ```{r}
-goal_4_histogram <- ggplot(sdr_data, aes(x = goal_4_score, fill=regions_used_for_the_sdr)) +
-  geom_histogram() +
+goal_4_point <- ggplot(sdr_data, aes(x = goal_4_score,y = goal_3_score, color=regions_used_for_the_sdr)) +
+  geom_point() +
   theme_minimal() +
   scale_fill_viridis_d() +
-  labs(title = "Distributions of SDG 4 Scores",
+  labs(title = "goal 4 scores",
        x = "SDG 4 Score",
        y = "Number of Countries",
-       fill = "Region")
+       color = "regions")
 
-ggplotly(goal_4_histogram)
+ggplotly(goal_4_point)
 ```
 
 
@@ -146,8 +146,17 @@ ggplot(data = sdr_data, aes(x= goal_3_score, y = goal_4_score, color = regions_u
 
   - hint: you will have to assign a name to the plot
 
+```{r, warning = FALSE}
+goal_4_point <- ggplot(data = sdr_data, aes(x= goal_3_score, y = goal_4_score, color = regions_used_for_the_sdr)) +
+  geom_point() +
+  theme_minimal() +
+  scale_fill_viridis_d(option = "inferno") +
+  labs(x = "Goal 3 Score",
+       y = "Goal 4 Score",
+       color = "Legend")
 
-
+ggplotly(goal_4_point)
+```
 ### Creating interactive maps with `leaflet`
 
 This takes a few fun steps to do
