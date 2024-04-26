@@ -150,10 +150,10 @@ ggplot(data = sdr_data, aes(x= goal_3_score, y = goal_4_score, color = regions_u
 goal_4_point <- ggplot(data = sdr_data, aes(x= goal_3_score, y = goal_4_score, color = regions_used_for_the_sdr)) +
   geom_point() +
   theme_minimal() +
-  scale_fill_viridis_d(option = "inferno") +
+  scale_color_viridis_d(option = "inferno") +
   labs(x = "Goal 3 Score",
        y = "Goal 4 Score",
-       color = "Legend")
+       color = "Rwizard")
 
 ggplotly(goal_4_point)
 ```
@@ -248,6 +248,10 @@ The last step before mapping with leaflet is specifying a coordinate reference s
 - WGS84 stands for World Geodetic System 1984. It's a global standard for measuring locations on Earth's surface. WGS84 defines a coordinate system using longitude and latitude coordinates, where longitude measures east-west position and latitude measures north-south position. This system is widely used in GPS (Global Positioning System) devices, mapping applications, and geographic information systems (GIS) because it provides a consistent and accurate way to represent locations anywhere on Earth.
 
 ```{r}
+install.packages("rnaturalearthdata")
+```
+
+```{r}
 sdr_data_world_joined <- st_transform(sdr_data_world_joined, "+proj=longlat +datum=WGS84")
 ```
 
@@ -273,6 +277,22 @@ leaflet(sdr_data_world_joined) %>%
   setView( lat=10, lng=0 , zoom=2) %>%
   addPolygons(stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, color = ~colorQuantile("YlOrRd", goal_7_score)(goal_7_score), label = mytext)
 ```
+
+
+```{r}
+mytext <- paste(
+    "Country: ", sdr_data_world_joined$country,"<br/>", 
+    "Goal 5 Score: ", round(sdr_data_world_joined$goal_5_score, 2), 
+    sep="") %>%
+  lapply(htmltools::HTML)
+
+leaflet(sdr_data_world_joined) %>% 
+  addTiles()  %>% 
+  setView( lat=10, lng=0 , zoom=2) %>%
+  addPolygons(stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, color = ~colorQuantile("YlOrRd", goal_5_score)(goal_5_score), label = mytext)
+```
+
+
 #### <span style="color: red;">Challenge 2</span>
 
 Can you edit the code chunk above that generates the map to:
