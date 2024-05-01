@@ -29,6 +29,7 @@ library(ggpubr)
 library(janitor)
 library(ggcorrplot)
 library(vembedr)
+library(plotly)
 ```
 
 
@@ -197,14 +198,17 @@ To circle back and reinforce how the linear regression (line drawn through our s
   - What does this look like on scatter plot?
   
 ```{r, warning=FALSE, message=FALSE}
-ggplot(sdr_data, aes(x = goal_12_score, 
-                     y = goal_9_score)) +
+sdg_scores_2023 <- ggplot(sdr_data, aes(x = goal_3_score, 
+                     y = goal_8_score, label = country)) + 
   geom_point() +
   geom_smooth() +
-  stat_cor() +
-  theme_minimal() 
+  stat_cor(output.type = "text", label.sep = '\n') +
+  theme_minimal()
+scale_fill_viridis_d("magma")
 
+ggplotly(sdg_scores_2023)
 ```
+In this scatterplot we see a strong positive correlation. The positive correlation in this scatterplot is for goal 3 scores ("Good health and well being) and goal 8 scores (Decent work and economic growth).Afghanistan is definitely and outlier with very low goal 8 and 3 scores.It makes sense that the countries with more decent work (goal 8) also have a higher percentage of good health and well being (goal 3).
 
 ### <span style="color: red;">Challenge 1</span>
 
