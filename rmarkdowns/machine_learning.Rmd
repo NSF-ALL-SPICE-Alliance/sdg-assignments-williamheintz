@@ -43,6 +43,9 @@ library(vembedr)
 embed_url("https://www.youtube.com/watch?v=ZFtoi7PWjVw")
 ```
 
+```{r}
+sdr_data_imputed <- missRanger(sdr_data_normalized_scores_less_na)
+```
 
 
 
@@ -318,6 +321,7 @@ Now that we saw how one variable influences the models prediction, how about 2 v
 pd <- pdp::partial(rf_matmort, pred.var = c("normalized_score_sdg6_sanita", "normalized_score_sdg3_u5mort"))
 # Default PDP
 plotPartial(pd)
+
 ```
 
 *How to interpret*:
@@ -345,6 +349,12 @@ Edit this code chunk `rf_matmort <- randomForest(normalized_score_sdg3_matmort ~
     
     - *Hint* make sure to continue replacing rf_matmort with the new name you assign your random forest model
 
+```{r}
+k4 <- kmeans(sdr_data_imputed, centers = 4)
+```
+```{r}
+fviz_cluster(k4, data = sdr_data_imputed) + theme_minimal()
+```
 
 
 
