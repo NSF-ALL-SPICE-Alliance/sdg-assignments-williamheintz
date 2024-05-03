@@ -355,8 +355,39 @@ k4 <- kmeans(sdr_data_imputed, centers = 4)
 ```{r}
 fviz_cluster(k4, data = sdr_data_imputed) + theme_minimal()
 ```
+```{r}
+rf_obesity <- randomForest(normalized_score_sdg2_obesity ~ ., data = sdr_data_imputed, importance = TRUE)
+```
+```{r}
+rf_obesity
+```
+```{r}
+importance_dfi <- as.data.frame(rf_obesity$importance)
+```
+```{r}
+importance_dfi_top_10 <- importance_dfi %>%
+  rownames_to_column(var = "variable") %>%
+  slice_max(n = 10, order_by = `%IncMSE`)
+```
+```{r}
+ggplot(importance_dfi_top_10, aes(x = `%IncMSE`, y = reorder(variable, `%IncMSE`))) +
+  geom_bar(stat = "identity", fill = "steelblue", color = "black") +
+  theme_minimal() +
+  labs(title = "Most Important Variables in Predicting Obesity",
+       subtitle = "Top 10",
+       y = "SDG Indicator",
+       x = "Feature Importance (% Increase in Mean Squared Error)")
+```
+ 
+```{r}
+pdp::partial(rf_obesity, pred.var = "normalized_score_sdg3_tb", plot = TRUE)
+```
 
-
+```{r}
+pd <- pdp::partial(rf_obesity, pred.var = c("normalized_score_sdg3_tb", "normalized_score_sdg2_stunting"))
+# Default PDP
+plotPartial(pd)
+```
 
 
   
