@@ -1,0 +1,129 @@
+---
+title: "Final Project"
+author: "William Heintz"
+date: "2024-05-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(plotly)
+library(janitor)
+library(vembedr)
+library(leaflet)
+library(rnaturalearth)
+library(sf)
+library(ggcorrplot)
+library(ggpubr)
+library(sp)
+```
+Read in Data
+
+```{r}
+SDR_2023_Data <- read.csv(here("data/sdr-2023-Data.csv"))
+```
+
+```{r}
+sdr_data_sids <- read.csv(here("data/SDR-for-SIDS/SIDS-SDR-2023-data.csv"))
+```
+
+
+Clean Data
+
+```{r}
+SDR_2023_Data <- SDR_2023_Data %>%
+  clean_names()
+```
+
+Create Dataframe from Rnaturalearth
+```{r}
+world <- ne_countries(scale = "medium", returnclass = "sf")
+```
+
+Make Dataframe smaller
+```{r}
+world <- world %>% 
+  select(name_long, iso_a3, geometry)
+```
+Rename Columns
+```{r}
+# Rename a column in a data frame or matrix
+colnames(SDR_2023_Data)[which(colnames(SDR_2023_Data) == "country_code_iso3")] <- "iso_a3"
+```
+Join Data
+```{r}
+sdr_data_world_joined <- left_join(SDR_2023_Data, world, by = "iso_a3")
+```
+check the class
+```{r}
+class(sdr_data_world_joined)
+```
+```{r}
+sdr_data_world_joined <- st_as_sf(sdr_data_world_joined)
+```
+
+```{r}
+class(sdr_data_world_joined)
+```
+
+```{r}
+#install.packages("rnaturalearthdata")
+```
+
+```{r}
+sdr_data_world_joined <- st_transform(sdr_data_world_joined, "+proj=longlat +datum=WGS84")
+```
+
+```{r}
+mytext <- paste(
+    "Country: ", sdr_data_world_joined$country,"<br/>", 
+    "Goal 2 Score: ", round(sdr_data_world_joined$goal_2_score, 2), 
+    sep="") %>%
+  lapply(htmltools::HTML)
+
+leaflet(sdr_data_world_joined) %>% 
+  addTiles()  %>% 
+  setView( lat=10, lng=0 , zoom=2) %>%
+  addPolygons(stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, color = ~colorQuantile("YlOrRd", goal_2_score)(goal_2_score), label = mytext)
+```           
+Sustainable Development Goal 2 is about Ending hunger, achieve food security and improved nutrition and promote sustainable agriculture.The number of people facing hunger and food insecurity has been on the rise since 2015, with the growing inequalities exacerbating the situation.This is an interactive world map I'm using to focus on Sudan a North African country facing extreme hunger.South Sudans Goal 2 score is below 20. Goal 2 seeks sustainable solutions to end hunger in all its forms by 2030 and to achieve food security. A record number of people are facing hunger in Sudan because of violence. Violence is an enourmous cause of the hunger crisis in Sudan.Sustainable Development Goal 16 is about Promoting peaceful and inclusive societies for sustainable development, provide access to justice for all and build effective, accountable and inclusive institutions at all levels so naturally countries with low goal 16 scores have alot of violence.   
+
+Create an interactive histogram
+
+```{r, message=FALSE, warning=FALSE}
+goal_2_histogram <- ggplot(SDR_2023_Data, aes(x = goal_2_score, fill=regions_used_for_the_sdr, Label = country)) +
+  geom_histogram() +
+  theme_void() +
+  scale_fill_viridis_d(option = "fire") +
+  labs(title = "Hunger in Sudan",
+       x = "SDG 2 Score",
+       y = "Country",
+       fill = "Region")
+ggplotly(goal_2_histogram)
+```
+
+In this visualization you notice that South Sudan has a very low goal 2 score as opposed to the country Malta who has a very high goal 2 score. A big part of the hunger crisis is violence. The war in Sudan risks triggering the world's largest hunger crisis. An immediate ceasefire is needed to prevent a complete collapse in Sudan and further regional destabilization as millions flee into neighbouring countries. As conflict rages, 18 million people face acute hunger in Sudan.As I mentitioned previously violence is a huge cause of hunger in South Sudan next were gonna take a gander at some data directly correlating violence and hunger.
+
+
+```{r}
+ss_africa_sdr_data <- SDR_2023_Data %>%
+  filter(regions_used_for_the_sdr == "Sub-Saharan Africa")
+```
+
+```{r}
+S_Sudan <- ggplot(ss_africa_sdr_data, aes(x=goal_2_score,
+                                          y = goal_16_score, label = country)) +
+  labs(title= "Scores",
+       x= "Hungry",
+       y= "Angry")+
+  geom_point() +
+  geom_smooth() +
+  stat_cor(output.type ="text", label.sep = '\n') +
+  theme_minimal()
+ggplotly(S_Sudan)
+       
+       
+```
+In this interactive scatterplot we see a correlation coefficient.In both positive and negative correlations, the strength of the relationship between the variables can vary. The correlation coefficient is a statistical measure that quantifies the strength and direction of a correlation, ranging from -1 to +1. A correlation coefficient of +1 indicates a perfect positive correlation, -1 indicates a perfect negative correlation, and 0 indicates no correlation. In this plot R = .25 indicates that there is somewhat of a positive correlation.
